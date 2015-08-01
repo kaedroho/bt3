@@ -7,14 +7,11 @@ use std::path::Path;
 
 use bt3::terrain::Terrain;
 use bt3::render::base::Renderer;
-use bt3::render::piston::PistonRenderer;
 
 
 fn load_terrain_into_renderer(renderer: &mut Renderer, terrain: &Terrain) {
-    renderer.init_terrain(terrain);
-
     for region in terrain.regions.iter() {
-        renderer.load_region(&terrain, &region);
+        renderer.load_region(&region);
     }
 }
 
@@ -31,7 +28,6 @@ fn main() {
     }.unwrap();
 
     // Setup renderer
-    let mut renderer = PistonRenderer::new();
-    load_terrain_into_renderer(&mut renderer, &terrain);
-
+    //let mut renderer = Renderer::new();
+    //load_terrain_into_renderer(&mut renderer, &terrain);
 }
