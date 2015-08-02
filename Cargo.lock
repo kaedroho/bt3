@@ -2,6 +2,7 @@
 name = "bt3"
 version = "0.1.0"
 dependencies = [
+ "genmesh 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gfx 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "gfx_device_gl 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "image 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -162,6 +163,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "winapi 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "genmesh"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "gfx"
