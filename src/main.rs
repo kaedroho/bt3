@@ -56,60 +56,15 @@ fn main() {
     window.set_capture_cursor(true);
 
     // Create terrain
-    let terrain = Rc::new(match imagefile::load_terrain_from_image(Path::new("test.png")) {
-        Ok(terrain) => {
-            Some(terrain)
-        },
-        Err(err) => {
-            None
-        }
-    }.unwrap());
+    let terrain = Rc::new(imagefile::load_terrain_from_image(Path::new("test.png")).unwrap());
 
     // Setup renderer
     let mut renderer = GFXRenderer::new(&terrain, &mut window.factory.clone());
     load_terrain_into_renderer(&mut renderer, &terrain);
 
-
-
-    let ref mut factory = window.factory.borrow_mut().clone();
-
-    // fullscreen quad
-    let vertex_data = [
-        Vertex::new([-1.0, -1.0], [0.0, 1.0]),
-        Vertex::new([ 1.0, -1.0], [1.0, 1.0]),
-        Vertex::new([ 1.0,  1.0], [1.0, 0.0]),
-
-        Vertex::new([-1.0, -1.0], [0.0, 1.0]),
-        Vertex::new([ 1.0,  1.0], [1.0, 0.0]),
-        Vertex::new([-1.0,  1.0], [0.0, 0.0]),
-    ];
-    let mesh = factory.create_mesh(&vertex_data);
-
-    let program = {
-        let vs = gfx::ShaderSource {
-            glsl_120: Some(include_bytes!("shader/simple_120.glslv")),
-            glsl_150: Some(include_bytes!("shader/simple_150.glslv")),
-            .. gfx::ShaderSource::empty()
-        };
-        let fs = gfx::ShaderSource {
-            glsl_120: Some(include_bytes!("shader/simple_120.glslf")),
-            glsl_150: Some(include_bytes!("shader/simple_150.glslf")),
-            .. gfx::ShaderSource::empty()
-        };
-        factory.link_program_source(vs, fs).unwrap()
-    };
-
-    let uniforms = Params{
-        heightmap: (renderer.heightmap.clone(), None),
-        _r: std::marker::PhantomData,
-    };
-    let mut batch = gfx::batch::Full::new(mesh, program, uniforms).unwrap();
-
     // Main loop
     for e in window {
         e.draw_3d(|stream| {
-            //stream.draw(&batch).unwrap();
-
             for region in terrain.regions.iter() {
                 renderer.draw_region(&region, stream);
             }
