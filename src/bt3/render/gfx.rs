@@ -1,19 +1,26 @@
 extern crate gfx;
 extern crate gfx_device_gl;
 extern crate genmesh;
+extern crate cgmath;
 
 use std::rc::Rc;
 use std::cell::RefCell;
+use std::marker::PhantomData;
 
 use self::gfx::device::{Factory, BufferRole};
 use self::gfx::extra::factory::FactoryExt;
-use self::gfx::device::handle::Texture;
+use self::gfx::extra::stream::{Stream, OwnedStream};
+use self::gfx::device::handle::{Texture, Program};
 use self::gfx::device::tex::{ImageInfo, Format};
 use self::gfx::traits::{ToIndexSlice, ToSlice};
 use self::gfx::render::mesh::{Mesh, Slice};
 
 use self::genmesh::{Vertices, Triangulate};
 use self::genmesh::generators::{Plane, SharedVertex, IndexedPolygon};
+
+use self::cgmath::FixedArray;
+use self::cgmath::{Matrix4, Point3, Vector3};
+use self::cgmath::{Transform, AffineMatrix3};
 
 use bt3::region::Region;
 use bt3::terrain::Terrain;
@@ -22,6 +29,15 @@ use bt3::render::base::Renderer;
 
 gfx_vertex!( Vertex {
     a_Pos@ pos: [f32; 3],
+});
+
+
+gfx_parameters!( Params {
+    u_Model@ model: [[f32; 4]; 4],
+    u_View@ view: [[f32; 4]; 4],
+    u_Proj@ proj: [[f32; 4]; 4],
+    u_Offset@ offset: [f32; 2],
+    t_Heightmap@ heightmap: gfx::shade::TextureParam<R>,
 });
 
 
@@ -43,9 +59,22 @@ fn gen_16x16_plane_mesh(factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> (Mesh<
         .collect();
 
     let mesh = factory.borrow_mut().create_mesh(&vertex_data);
-    let slice = factory.borrow_mut().create_buffer_static(&index_data, BufferRole::Index).to_slice(gfx::PrimitiveType::TriangleList);;
+    let slice = factory.borrow_mut().create_buffer_static(&index_data, BufferRole::Index).to_slice(gfx::PrimitiveType::TriangleList);
 
     (mesh, slice)
+}
+
+
+fn gen_program(factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> Program<gfx_device_gl::Resources> {
+    let vs = gfx::ShaderSource {
+        glsl_150: Some(include_bytes!("shaders/terrain_150.glslv")),
+        .. gfx::ShaderSource::empty()
+    };
+    let fs = gfx::ShaderSource {
+        glsl_150: Some(include_bytes!("shaders/terrain_150.glslf")),
+        .. gfx::ShaderSource::empty()
+    };
+    factory.borrow_mut().link_program_source(vs, fs).unwrap()
 }
 
 
@@ -55,6 +84,8 @@ pub struct GFXRenderer {
 
     plane_mesh: Mesh<gfx_device_gl::Resources>,
     plane_slice: Slice<gfx_device_gl::Resources>,
+
+    program: Program<gfx_device_gl::Resources>,
 
     pub heightmap: Texture<gfx_device_gl::Resources>,
 }
@@ -67,11 +98,15 @@ impl GFXRenderer {
         // Generate a 16x16 tile mesh
         let (plane_mesh, plane_slice) = gen_16x16_plane_mesh(&factory);
 
+        // Compile shader program
+        let program = gen_program(&factory);
+
         GFXRenderer{
             terrain: terrain.clone(),
             factory: factory.clone(),
             plane_mesh: plane_mesh,
             plane_slice: plane_slice,
+            program: program,
             heightmap: factory.borrow_mut().create_texture_rgba8(gridSizeX as u16 * 256, gridSizeY as u16 * 256).unwrap(),
         }
     }
@@ -79,6 +114,8 @@ impl GFXRenderer {
 
 
 impl Renderer for GFXRenderer {
+    type Stream = OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>;
+
     fn load_region(&mut self, region: &Region) -> Result<(), String> {
         // Get the slot
         let (slotX, slotY) = match self.terrain.get_region_grid_slot(region) {
@@ -112,12 +149,47 @@ impl Renderer for GFXRenderer {
         Ok(())
     }
 
-    fn draw_region(&mut self, region: &Region) -> Result<(), String> {
+    fn draw_region(&mut self, region: &Region, stream: &mut Self::Stream) -> Result<(), String> {
         // Get the slot
         let (slotX, slotY) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
             None => return Err("Unable to draw region: region doesn't have a slot".to_string()),
         };
+
+        let data = Params {
+            model: Matrix4::identity().into_fixed(),
+            view: Matrix4::identity().into_fixed(),
+            proj: cgmath::perspective(cgmath::deg(60.0f32),
+                                      stream.get_aspect_ratio(),
+                                      0.1, 1000.0
+                                      ).into_fixed(),
+            offset: [256.0 * slotX as f32, 256.0 * slotX as f32],
+            heightmap: (self.heightmap.clone(), None),
+            _r: PhantomData,
+        };
+
+        let mut batch = gfx::batch::Full::new(self.plane_mesh.clone(), self.program.clone(), data).unwrap();
+
+        batch.slice = self.plane_slice.clone();
+        batch.state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
+
+        let view: AffineMatrix3<f32> = Transform::look_at(
+            &Point3::new(-100.0, -100.0, 80.0),
+            &Point3::new(0.0, 0.0, 40.0),
+            &Vector3::unit_z(),
+        );
+        batch.params.view = view.mat.into_fixed();
+
+        for x in 0..16 {
+            for y in 0..16 {
+                batch.params.offset = [
+                    256.0 * slotX as f32 + 16.0 * x as f32,
+                    256.0 * slotY as f32 + 16.0 * y as f32
+                ];
+
+                stream.draw(&batch).unwrap();
+            }
+        }
 
         // TODO: Draw the region
         Ok(())

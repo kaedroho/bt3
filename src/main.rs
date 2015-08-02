@@ -39,7 +39,7 @@ gfx_parameters!(Params{
 });
 
 
-fn load_terrain_into_renderer(renderer: &mut Renderer, terrain: &Terrain) {
+fn load_terrain_into_renderer<R: Renderer>(renderer: &mut R, terrain: &Terrain) {
     for region in terrain.regions.iter() {
         renderer.load_region(&region);
     }
@@ -99,9 +99,8 @@ fn main() {
         factory.link_program_source(vs, fs).unwrap()
     };
 
-
     let uniforms = Params{
-        heightmap: (renderer.heightmap, None),
+        heightmap: (renderer.heightmap.clone(), None),
         _r: std::marker::PhantomData,
     };
     let mut batch = gfx::batch::Full::new(mesh, program, uniforms).unwrap();
@@ -109,7 +108,11 @@ fn main() {
     // Main loop
     for e in window {
         e.draw_3d(|stream| {
-            stream.draw(&batch).unwrap();
+            //stream.draw(&batch).unwrap();
+
+            for region in terrain.regions.iter() {
+                renderer.draw_region(&region, stream);
+            }
         });
     }
 }
