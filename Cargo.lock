@@ -4,13 +4,7 @@ version = "0.1.0"
 dependencies = [
  "bt3 0.1.0",
  "bt3_render_gl 0.1.0",
- "cgmath 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "genmesh 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "gfx 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "gfx_device_gl 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "image 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "piston_window 0.11.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "vecmath 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
