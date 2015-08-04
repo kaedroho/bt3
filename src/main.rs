@@ -3,8 +3,7 @@ extern crate image;
 #[macro_use]
 extern crate gfx;
 
-mod bt3;
-mod imagefile;
+extern crate bt3;
 
 use std::rc::Rc;
 use std::path::Path;
@@ -13,6 +12,7 @@ use piston_window::{WindowSettings, PistonWindow, AdvancedWindow,clear};
 use piston_window::image as draw_image;
 use gfx::traits::{Factory, Stream, FactoryExt};
 
+use bt3::imagefile;
 use bt3::terrain::Terrain;
 use bt3::render::base::Renderer;
 use bt3::render::gfx::GFXRenderer;

@@ -3,9 +3,9 @@ extern crate image;
 use std::path::Path;
 use std::fs::File;
 
-use image::GenericImage;
+use self::image::GenericImage;
 
-use bt3::terrain::Terrain;
+use terrain::Terrain;
 
 
 pub fn load_terrain_from_image(path: &Path) -> Result<Terrain, image::ImageError> {

@@ -1,4 +1,4 @@
-use bt3::region::Region;
+use region::Region;
 
 
 pub struct Terrain {

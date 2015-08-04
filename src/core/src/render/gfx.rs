@@ -22,9 +22,9 @@ use self::cgmath::FixedArray;
 use self::cgmath::{Matrix4, Point3, Vector3};
 use self::cgmath::{Transform, AffineMatrix3};
 
-use bt3::region::Region;
-use bt3::terrain::Terrain;
-use bt3::render::base::Renderer;
+use region::Region;
+use terrain::Terrain;
+use render::base::Renderer;
 
 
 gfx_vertex!( Vertex {

@@ -1,5 +1,5 @@
-use bt3::region::Region;
-use bt3::terrain::Terrain;
+use region::Region;
+use terrain::Terrain;
 
 
 pub trait Renderer {
