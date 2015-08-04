@@ -1,10 +1,10 @@
 [package]
-name = "bt3_renderer_gfx_gl"
+name = "bt3_render_gl"
 version = "0.1.0"
 authors = ["Karl Hobley <karlhobley10@gmail.com>"]
 
 [lib]
-name = "bt3_renderer_gfx_gl"
+name = "bt3_render_gl"
 
 [dependencies]
 gfx = "0.6.5"

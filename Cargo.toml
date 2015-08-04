@@ -16,6 +16,6 @@ cgmath = "0.2.0"
 path = "src/core"
 version = "0.1.0"
 
-[dependencies.bt3_renderer_gfx_gl]
-path = "src/renderers/gfx_gl"
+[dependencies.bt3_render_gl]
+path = "src/renderers/gl"
 version = "0.1.0"

@@ -3,7 +3,7 @@ name = "bt3_meta"
 version = "0.1.0"
 dependencies = [
  "bt3 0.1.0",
- "bt3_renderer_gfx_gl 0.1.0",
+ "bt3_render_gl 0.1.0",
  "cgmath 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "genmesh 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gfx 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -56,7 +56,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "bt3_renderer_gfx_gl"
+name = "bt3_render_gl"
 version = "0.1.0"
 dependencies = [
  "bt3 0.1.0",

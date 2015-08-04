@@ -4,7 +4,7 @@ extern crate image;
 extern crate gfx;
 
 extern crate bt3;
-extern crate bt3_renderer_gfx_gl;
+extern crate bt3_render_gl;
 
 use std::rc::Rc;
 use std::path::Path;
@@ -16,7 +16,7 @@ use gfx::traits::{Factory, Stream, FactoryExt};
 use bt3::imagefile;
 use bt3::terrain::Terrain;
 use bt3::render::Renderer;
-use bt3_renderer_gfx_gl::GFXRenderer;
+use bt3_render_gl::GLRenderer;
 
 
 gfx_vertex!(Vertex{
@@ -60,7 +60,7 @@ fn main() {
     let terrain = Rc::new(imagefile::load_terrain_from_image(Path::new("test.png")).unwrap());
 
     // Setup renderer
-    let mut renderer = GFXRenderer::new(&terrain, &mut window.factory.clone());
+    let mut renderer = GLRenderer::new(&terrain, &mut window.factory.clone());
     load_terrain_into_renderer(&mut renderer, &terrain);
 
     // Main loop

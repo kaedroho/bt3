@@ -81,7 +81,7 @@ fn gen_program(factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> Program<gfx_dev
 }
 
 
-pub struct GFXRenderer {
+pub struct GLRenderer {
     terrain: Rc<Terrain>,
     factory: Rc<RefCell<gfx_device_gl::Factory>>,
 
@@ -94,8 +94,8 @@ pub struct GFXRenderer {
 }
 
 
-impl GFXRenderer {
-    pub fn new(terrain: &Rc<Terrain>, factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> GFXRenderer {
+impl GLRenderer {
+    pub fn new(terrain: &Rc<Terrain>, factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> GLRenderer {
         let (gridSizeX, gridSizeY) = terrain.get_grid_size();
 
         // Generate a 16x16 tile mesh
@@ -104,7 +104,7 @@ impl GFXRenderer {
         // Compile shader program
         let program = gen_program(&factory);
 
-        GFXRenderer{
+        GLRenderer{
             terrain: terrain.clone(),
             factory: factory.clone(),
             plane_mesh: plane_mesh,
@@ -116,7 +116,7 @@ impl GFXRenderer {
 }
 
 
-impl Renderer for GFXRenderer {
+impl Renderer for GLRenderer {
     type Stream = OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>;
 
     fn load_region(&mut self, region: &Region) -> Result<(), String> {
