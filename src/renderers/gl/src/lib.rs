@@ -113,41 +113,9 @@ impl GLRenderer {
             heightmap: factory.borrow_mut().create_texture_rgba8(grid_size_x as u16 * 256, grid_size_y as u16 * 256).unwrap(),
         }
     }
-}
 
 
-impl Renderer for GLRenderer {
-    type Stream = OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>;
-
-    fn load_region(&mut self, region: &Region) -> Result<(), String> {
-        // Get the slot
-        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
-            Some(slot) => slot,
-            None => return Err("Unable to load region: region doesn't have a slot".to_string()),
-        };
-
-        // Make ImageInfo object describing slot location within texture
-        let mut imginfo = ImageInfo::from(*self.heightmap.get_info());
-        imginfo.xoffset = slot_x as u16 * 256;
-        imginfo.yoffset = slot_y as u16 * 256;
-        imginfo.width = 256;
-        imginfo.height = 256;
-        imginfo.format = Format::DEPTH16;
-
-        // Copy data into texture
-        let mut factory = self.factory.borrow_mut();
-        factory.update_texture(&self.heightmap, &imginfo, &region.heights, None).unwrap();
-
-        Ok(())
-    }
-
-    #[allow(unused_variables)]
-    fn unload_region(&mut self, region: &Region) -> Result<(), String> {
-        // Nothing to do here
-        Ok(())
-    }
-
-    fn draw_region(&mut self, region: &Region, stream: &mut Self::Stream) -> Result<(), String> {
+    pub fn draw_region(&mut self, region: &Region, stream: &mut OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>) -> Result<(), String> {
         // Get the slot
         let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
@@ -189,6 +157,37 @@ impl Renderer for GLRenderer {
             }
         }
 
+        Ok(())
+    }
+}
+
+
+impl Renderer for GLRenderer {
+    fn load_region(&mut self, region: &Region) -> Result<(), String> {
+        // Get the slot
+        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
+            Some(slot) => slot,
+            None => return Err("Unable to load region: region doesn't have a slot".to_string()),
+        };
+
+        // Make ImageInfo object describing slot location within texture
+        let mut imginfo = ImageInfo::from(*self.heightmap.get_info());
+        imginfo.xoffset = slot_x as u16 * 256;
+        imginfo.yoffset = slot_y as u16 * 256;
+        imginfo.width = 256;
+        imginfo.height = 256;
+        imginfo.format = Format::DEPTH16;
+
+        // Copy data into texture
+        let mut factory = self.factory.borrow_mut();
+        factory.update_texture(&self.heightmap, &imginfo, &region.heights, None).unwrap();
+
+        Ok(())
+    }
+
+    #[allow(unused_variables)]
+    fn unload_region(&mut self, region: &Region) -> Result<(), String> {
+        // Nothing to do here
         Ok(())
     }
 }
