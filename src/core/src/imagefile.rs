@@ -1,7 +1,6 @@
 extern crate image;
 
 use std::path::Path;
-use std::fs::File;
 
 use self::image::GenericImage;
 
