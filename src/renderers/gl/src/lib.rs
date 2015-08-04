@@ -96,7 +96,7 @@ pub struct GLRenderer {
 
 impl GLRenderer {
     pub fn new(terrain: &Rc<Terrain>, factory: &Rc<RefCell<gfx_device_gl::Factory>>) -> GLRenderer {
-        let (gridSizeX, gridSizeY) = terrain.get_grid_size();
+        let (grid_size_x, grid_size_y) = terrain.get_grid_size();
 
         // Generate a 16x16 tile mesh
         let (plane_mesh, plane_slice) = gen_16x16_plane_mesh(&factory);
@@ -110,7 +110,7 @@ impl GLRenderer {
             plane_mesh: plane_mesh,
             plane_slice: plane_slice,
             program: program,
-            heightmap: factory.borrow_mut().create_texture_rgba8(gridSizeX as u16 * 256, gridSizeY as u16 * 256).unwrap(),
+            heightmap: factory.borrow_mut().create_texture_rgba8(grid_size_x as u16 * 256, grid_size_y as u16 * 256).unwrap(),
         }
     }
 }
@@ -121,15 +121,15 @@ impl Renderer for GLRenderer {
 
     fn load_region(&mut self, region: &Region) -> Result<(), String> {
         // Get the slot
-        let (slotX, slotY) = match self.terrain.get_region_grid_slot(region) {
+        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
             None => return Err("Unable to load region: region doesn't have a slot".to_string()),
         };
 
         // Make ImageInfo object describing slot location within texture
         let mut imginfo = ImageInfo::from(*self.heightmap.get_info());
-        imginfo.xoffset = slotX as u16 * 256;
-        imginfo.yoffset = slotY as u16 * 256;
+        imginfo.xoffset = slot_x as u16 * 256;
+        imginfo.yoffset = slot_y as u16 * 256;
         imginfo.width = 256;
         imginfo.height = 256;
         imginfo.format = Format::DEPTH16;
@@ -143,7 +143,7 @@ impl Renderer for GLRenderer {
 
     fn unload_region(&mut self, region: &Region) -> Result<(), String> {
         // Get the slot
-        let (slotX, slotY) = match self.terrain.get_region_grid_slot(region) {
+        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
             None => return Err("Unable to unload region: region doesn't have a slot".to_string()),
         };
@@ -154,7 +154,7 @@ impl Renderer for GLRenderer {
 
     fn draw_region(&mut self, region: &Region, stream: &mut Self::Stream) -> Result<(), String> {
         // Get the slot
-        let (slotX, slotY) = match self.terrain.get_region_grid_slot(region) {
+        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
             None => return Err("Unable to draw region: region doesn't have a slot".to_string()),
         };
@@ -166,7 +166,7 @@ impl Renderer for GLRenderer {
                                       stream.get_aspect_ratio(),
                                       0.1, 1000.0
                                       ).into_fixed(),
-            offset: [256.0 * slotX as f32, 256.0 * slotX as f32],
+            offset: [256.0 * slot_x as f32, 256.0 * slot_x as f32],
             heightmap: (self.heightmap.clone(), None),
             _r: PhantomData,
         };
@@ -186,8 +186,8 @@ impl Renderer for GLRenderer {
         for x in 0..16 {
             for y in 0..16 {
                 batch.params.offset = [
-                    256.0 * slotX as f32 + 16.0 * x as f32,
-                    256.0 * slotY as f32 + 16.0 * y as f32
+                    256.0 * slot_x as f32 + 16.0 * x as f32,
+                    256.0 * slot_y as f32 + 16.0 * y as f32
                 ];
 
                 stream.draw(&batch).unwrap();
