@@ -1,5 +1,4 @@
 use region::Region;
-use terrain::Terrain;
 
 
 pub trait Renderer {
