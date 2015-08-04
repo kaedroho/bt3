@@ -10,20 +10,20 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::marker::PhantomData;
 
-use self::gfx::device::{Factory, BufferRole};
-use self::gfx::extra::factory::FactoryExt;
-use self::gfx::extra::stream::{Stream, OwnedStream};
-use self::gfx::device::handle::{Texture, Program};
-use self::gfx::device::tex::{ImageInfo, Format};
-use self::gfx::traits::{ToIndexSlice, ToSlice};
-use self::gfx::render::mesh::{Mesh, Slice};
+use gfx::device::{Factory, BufferRole};
+use gfx::extra::factory::FactoryExt;
+use gfx::extra::stream::{Stream, OwnedStream};
+use gfx::device::handle::{Texture, Program};
+use gfx::device::tex::{ImageInfo, Format};
+use gfx::traits::{ToIndexSlice, ToSlice};
+use gfx::render::mesh::{Mesh, Slice};
 
-use self::genmesh::{Vertices, Triangulate};
-use self::genmesh::generators::{Plane, SharedVertex, IndexedPolygon};
+use genmesh::{Vertices, Triangulate};
+use genmesh::generators::{Plane, SharedVertex, IndexedPolygon};
 
-use self::cgmath::FixedArray;
-use self::cgmath::{Matrix4, Point3, Vector3};
-use self::cgmath::{Transform, AffineMatrix3};
+use cgmath::FixedArray;
+use cgmath::{Matrix4, Point3, Vector3};
+use cgmath::{Transform, AffineMatrix3};
 
 use bt3::region::Region;
 use bt3::terrain::Terrain;
