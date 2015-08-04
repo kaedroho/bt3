@@ -34,9 +34,9 @@ fn load_terrain_into_renderer<R: Renderer>(renderer: &mut R, terrain: &Terrain) 
 
 fn main() {
     // Create window
-    let (mut stream, mut device, mut factory) = gfx_window_glutin::init(
+    let (mut stream, mut device, factory) = gfx_window_glutin::init(
         glutin::Window::new().unwrap());
-    let mut factory = Rc::new(RefCell::new(factory));
+    let factory = Rc::new(RefCell::new(factory));
 
     stream.out.window.set_title("Terrain example");
 
