@@ -191,7 +191,6 @@ impl Renderer for GFXRenderer {
             }
         }
 
-        // TODO: Draw the region
         Ok(())
     }
 }
