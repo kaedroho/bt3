@@ -15,7 +15,7 @@ use gfx::traits::{Factory, Stream, FactoryExt};
 
 use bt3::imagefile;
 use bt3::terrain::Terrain;
-use bt3::render::base::Renderer;
+use bt3::render::Renderer;
 use bt3_renderer_gfx_gl::GFXRenderer;
 
 

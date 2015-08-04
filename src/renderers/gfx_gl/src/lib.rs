@@ -27,7 +27,7 @@ use cgmath::{Transform, AffineMatrix3};
 
 use bt3::region::Region;
 use bt3::terrain::Terrain;
-use bt3::render::base::Renderer;
+use bt3::render::Renderer;
 
 
 gfx_vertex!( Vertex {
