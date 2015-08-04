@@ -14,10 +14,12 @@ use bt3::render::Renderer;
 use bt3_render_gl::GLRenderer;
 
 
-fn load_terrain_into_renderer<R: Renderer>(renderer: &mut R, terrain: &Terrain) {
+fn load_terrain_into_renderer<R: Renderer>(renderer: &mut R, terrain: &Terrain) -> Result<(), String> {
     for region in terrain.regions.iter() {
-        renderer.load_region(&region);
+        try!(renderer.load_region(&region));
     }
+
+    Ok(())
 }
 
 
@@ -35,13 +37,13 @@ fn main() {
 
     // Setup renderer
     let mut renderer = GLRenderer::new(&terrain, &mut window.factory.clone());
-    load_terrain_into_renderer(&mut renderer, &terrain);
+    load_terrain_into_renderer(&mut renderer, &terrain).unwrap();
 
     // Main loop
     for e in window {
         e.draw_3d(|stream| {
             for region in terrain.regions.iter() {
-                renderer.draw_region(&region, stream);
+                renderer.draw_region(&region, stream).unwrap();
             }
         });
     }
