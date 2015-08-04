@@ -25,12 +25,11 @@ fn load_terrain_into_renderer<R: Renderer>(renderer: &mut R, terrain: &Terrain) 
 
 fn main() {
     // Create window
-    let mut window: PistonWindow =
+    let window: PistonWindow =
         WindowSettings::new("BT3 example", [640, 480])
         .exit_on_esc(true)
         .samples(4)
         .into();
-    window.set_capture_cursor(true);
 
     // Create terrain
     let terrain = Rc::new(imagefile::load_terrain_from_image(Path::new("test.png")).unwrap());
