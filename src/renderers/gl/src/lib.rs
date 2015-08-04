@@ -141,13 +141,8 @@ impl Renderer for GLRenderer {
         Ok(())
     }
 
+    #[allow(unused_variables)]
     fn unload_region(&mut self, region: &Region) -> Result<(), String> {
-        // Get the slot
-        let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
-            Some(slot) => slot,
-            None => return Err("Unable to unload region: region doesn't have a slot".to_string()),
-        };
-
         // Nothing to do here
         Ok(())
     }
