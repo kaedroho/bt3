@@ -4,9 +4,10 @@ version = "0.1.0"
 authors = ["Karl Hobley <karlhobley10@gmail.com>"]
 
 [dependencies]
-piston_window = "0.11.0"
 cgmath = "0.2.0"
 gfx = "0.6.5"
+glutin = "0.2"
+gfx_window_glutin = "0.3.0"
 
 [dependencies.bt3]
 path = "src/core"

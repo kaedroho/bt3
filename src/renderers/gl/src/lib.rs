@@ -107,8 +107,7 @@ impl GLRenderer {
         }
     }
 
-
-    pub fn draw_region(&mut self, region: &Region, stream: &mut OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>, mvp: &[[f32; 4]; 4]) -> Result<(), String> {
+    pub fn draw_region<O: gfx::Output<gfx_device_gl::Resources>>(&mut self, region: &Region, stream: &mut OwnedStream<gfx_device_gl::Device, O>, mvp: &[[f32; 4]; 4]) -> Result<(), String> {
         // Get the slot
         let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
