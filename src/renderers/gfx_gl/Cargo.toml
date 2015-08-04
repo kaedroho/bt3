@@ -1,21 +1,17 @@
 [package]
-name = "bt3_meta"
+name = "bt3_renderer_gfx_gl"
 version = "0.1.0"
 authors = ["Karl Hobley <karlhobley10@gmail.com>"]
 
+[lib]
+name = "bt3_renderer_gfx_gl"
+
 [dependencies]
-image = "0.3.11"
 gfx = "0.6.5"
 gfx_device_gl = "0.4.1"
-piston_window = "0.11.0"
-vecmath = "0.1.1"
 genmesh = "0.2.1"
 cgmath = "0.2.0"
 
 [dependencies.bt3]
-path = "src/core"
-version = "0.1.0"
-
-[dependencies.bt3_renderer_gfx_gl]
-path = "src/renderers/gfx_gl"
+path = "../../core"
 version = "0.1.0"

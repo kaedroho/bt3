@@ -1,7 +1,10 @@
+#[macro_use]
 extern crate gfx;
 extern crate gfx_device_gl;
 extern crate genmesh;
 extern crate cgmath;
+
+extern crate bt3;
 
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -22,9 +25,9 @@ use self::cgmath::FixedArray;
 use self::cgmath::{Matrix4, Point3, Vector3};
 use self::cgmath::{Transform, AffineMatrix3};
 
-use region::Region;
-use terrain::Terrain;
-use render::base::Renderer;
+use bt3::region::Region;
+use bt3::terrain::Terrain;
+use bt3::render::base::Renderer;
 
 
 gfx_vertex!( Vertex {

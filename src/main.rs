@@ -4,6 +4,7 @@ extern crate image;
 extern crate gfx;
 
 extern crate bt3;
+extern crate bt3_renderer_gfx_gl;
 
 use std::rc::Rc;
 use std::path::Path;
@@ -15,7 +16,7 @@ use gfx::traits::{Factory, Stream, FactoryExt};
 use bt3::imagefile;
 use bt3::terrain::Terrain;
 use bt3::render::base::Renderer;
-use bt3::render::gfx::GFXRenderer;
+use bt3_renderer_gfx_gl::GFXRenderer;
 
 
 gfx_vertex!(Vertex{
