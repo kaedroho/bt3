@@ -10,7 +10,6 @@ name = "bt3_render_gl"
 gfx = "0.6.5"
 gfx_device_gl = "0.4.1"
 genmesh = "0.2.1"
-cgmath = "0.2.0"
 
 [dependencies.bt3]
 path = "../../core"

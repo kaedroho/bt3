@@ -2,7 +2,6 @@
 extern crate gfx;
 extern crate gfx_device_gl;
 extern crate genmesh;
-extern crate cgmath;
 
 extern crate bt3;
 
@@ -21,10 +20,6 @@ use gfx::render::mesh::{Mesh, Slice};
 use genmesh::{Vertices, Triangulate};
 use genmesh::generators::{Plane, SharedVertex, IndexedPolygon};
 
-use cgmath::FixedArray;
-use cgmath::{Matrix4, Point3, Vector3};
-use cgmath::{Transform, AffineMatrix3};
-
 use bt3::region::Region;
 use bt3::terrain::Terrain;
 use bt3::render::Renderer;
@@ -36,9 +31,7 @@ gfx_vertex!( Vertex {
 
 
 gfx_parameters!( Params {
-    u_Model@ model: [[f32; 4]; 4],
-    u_View@ view: [[f32; 4]; 4],
-    u_Proj@ proj: [[f32; 4]; 4],
+    u_MVP@ mvp: [[f32; 4]; 4],
     u_Offset@ offset: [f32; 2],
     t_Heightmap@ heightmap: gfx::shade::TextureParam<R>,
 });
@@ -115,7 +108,7 @@ impl GLRenderer {
     }
 
 
-    pub fn draw_region(&mut self, region: &Region, stream: &mut OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>) -> Result<(), String> {
+    pub fn draw_region(&mut self, region: &Region, stream: &mut OwnedStream<gfx_device_gl::Device, gfx_device_gl::Output>, mvp: &[[f32; 4]; 4]) -> Result<(), String> {
         // Get the slot
         let (slot_x, slot_y) = match self.terrain.get_region_grid_slot(region) {
             Some(slot) => slot,
@@ -123,28 +116,15 @@ impl GLRenderer {
         };
 
         let data = Params {
-            model: Matrix4::identity().into_fixed(),
-            view: Matrix4::identity().into_fixed(),
-            proj: cgmath::perspective(cgmath::deg(60.0f32),
-                                      stream.get_aspect_ratio(),
-                                      0.1, 1000.0
-                                      ).into_fixed(),
+            mvp: *mvp,
             offset: [256.0 * slot_x as f32, 256.0 * slot_x as f32],
             heightmap: (self.heightmap.clone(), None),
             _r: PhantomData,
         };
 
         let mut batch = gfx::batch::Full::new(self.plane_mesh.clone(), self.program.clone(), data).unwrap();
-
         batch.slice = self.plane_slice.clone();
         batch.state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
-
-        let view: AffineMatrix3<f32> = Transform::look_at(
-            &Point3::new(-100.0, -100.0, 80.0),
-            &Point3::new(0.0, 0.0, 40.0),
-            &Vector3::unit_z(),
-        );
-        batch.params.view = view.mat.into_fixed();
 
         for x in 0..16 {
             for y in 0..16 {
