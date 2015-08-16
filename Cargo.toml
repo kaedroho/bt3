@@ -8,6 +8,8 @@ cgmath = "0.2.0"
 gfx = "0.6.5"
 glutin = "0.2"
 gfx_window_glutin = "0.3.0"
+piston_window = "0.15.0"
+piston2d-graphics = "0.4.1"
 
 [dependencies.bt3]
 path = "src/core"
@@ -20,3 +22,7 @@ version = "0.1.0"
 [[example]]
 name = "basic"
 path = "examples/basic/main.rs"
+
+[[example]]
+name = "planner"
+path = "examples/planner/main.rs"
